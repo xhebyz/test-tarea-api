@@ -12,7 +12,7 @@ USER_ADMIN = os.environ.get("USER_ADMIN")
 
 def create_token(user_id, hash):
     if HASH_ACCESS != hash or USER_ADMIN != user_id:
-        raise InvalidUserException
+        raise InvalidUserException()
     return create_access_token(expires_delta=timedelta(minutes=15), identity=user_id)
 
 def verify_user():

@@ -42,7 +42,7 @@ class Tarea(ObjectData):
 
     def validation_data(self):
         res = self.validate(["titulo", "descripcion", "estado", "fecha_vencimiento"])
-        if not res or len(res) > 0:
+        if len(res) != 0:
             raise ValueError(f'Campos Requeridos : {", ".join(res)}')
         self.validate_estado()
 
@@ -66,7 +66,6 @@ class Tarea(ObjectData):
 
     @staticmethod
     def from_dict(data):
-        fecha_vencimiento = datetime.strptime(data['fecha_vencimiento'], FORMATE_DATETIME)
-        tarea = Tarea(data['titulo'], data['descripcion'], data['estado'], fecha_vencimiento)
+        tarea = Tarea(id=None, titulo=data['titulo'], descripcion=data['descripcion'], estado=data['estado'], fecha_vencimiento=data['fecha_vencimiento'])
         tarea.validation_data()
         return tarea

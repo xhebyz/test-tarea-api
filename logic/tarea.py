@@ -43,6 +43,7 @@ class TareaLogic:
 
     def update_tarea(self, tarea_id, tarea_data):
         tasks_collection = self.db.get_collection('tareas')
+        tarea_data["_id"] = tarea_id
         res = tasks_collection.update_one({'_id': tarea_id}, {'$set': tarea_data})
 
         if res.modified_count <= 0:
