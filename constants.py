@@ -1,0 +1,1 @@
+ESTADOS_PERMITIDOS = ['pendiente', 'en progreso', 'completada', 'cancelada']
