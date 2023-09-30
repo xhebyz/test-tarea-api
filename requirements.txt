@@ -1,0 +1,6 @@
+Flask==3.0.0
+Flask_JWT_Extended==4.5.2
+flask_magql==1.0.0
+graphene==3.3
+pymongo==4.5.0
+python-dotenv==1.0.0
