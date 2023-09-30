@@ -1,13 +1,18 @@
 from flask import Flask, request, jsonify
+
+import graphql_schema
 from database.mongo import MongoDB
-from bson import ObjectId
 from data.objects import Tarea
 from logic.tarea import TareaLogic
 import os
 from dotenv import load_dotenv
 from exceptions.handler import ExceptionHandler
+from flask_magql import MagqlExtension
+import magql
 
 app = Flask(__name__)
+magql_ext = MagqlExtension(graphql_schema.schema)
+magql_ext.init_app(app)
 load_dotenv()
 
 db = MongoDB()
@@ -15,6 +20,9 @@ tarea_logic = TareaLogic(db)
 
 collection_tarea = db.get_collection("tarea")
 
+@app.route('/hi', methods=['POST', 'GET'])
+def hi():
+    return jsonify({"message" : "world"}), 200
 
 @app.route('/tareas', methods=['POST'])
 def new_tarea():
@@ -56,5 +64,4 @@ def handle_exception(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=
-            os.getenv('DEBUG'))
+    app.run(port=8000, debug=True)

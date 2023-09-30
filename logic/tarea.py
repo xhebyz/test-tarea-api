@@ -1,7 +1,6 @@
 from bson import ObjectId
-from flask import jsonify
-from exceptions.error import NotFoundException
-
+from exceptions.error import NotFoundException, CustomException
+from pymongo.collection import ReturnDocument
 
 class TareaLogic:
     def __init__(self, db):
@@ -13,6 +12,7 @@ class TareaLogic:
 
         for tarea in tareas:
             tarea['_id'] = str(tarea['_id'])
+            tarea['id'] = str(tarea['_id'])
 
         return tareas
 
@@ -27,15 +27,26 @@ class TareaLogic:
 
     def add_tarea(self, tarea_data):
         tasks_collection = self.db.get_collection('tareas')
+
+        contador = tasks_collection.counters.find_one_and_update(
+            {'_id': 'tarea_id'},
+            {'$inc': {'seq': 1}},
+            projection={'seq': True, '_id': False},
+            upsert=True,
+            return_document=ReturnDocument.AFTER
+        )
+        tarea_id = contador['seq']
+        tarea_data['_id'] = tarea_id
+
         tarea_id = tasks_collection.insert_one(tarea_data).inserted_id
         return tarea_id
 
     def update_tarea(self, tarea_id, tarea_data):
         tasks_collection = self.db.get_collection('tareas')
-        res = tasks_collection.update_one({'_id': ObjectId(tarea_id)}, {'$set': tarea_data})
+        res = tasks_collection.update_one({'_id': tarea_id}, {'$set': tarea_data})
 
         if res.modified_count <= 0:
-            raise NotFoundException()
+            raise CustomException(500, "No se a actualizado ningun objeto")
 
     def eliminar_tarea(self, tarea_id):
         tasks_collection = self.db.get_collection('tareas')
