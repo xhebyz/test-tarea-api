@@ -24,32 +24,44 @@ class Tarea(ObjectData):
         self.estado = estado
         self.fecha_vencimiento = datetime.strptime(fecha_vencimiento, FORMATE_DATETIME)
 
+    @staticmethod
+    def dict_to_obj(data: dict):
+        tarea = Tarea(
+            id=data.get("_id"),
+            titulo=data.get("titulo"),
+            descripcion=data.get("descripcion"),
+            estado=data.get("estado"),
+            fecha_vencimiento=data.get("fecha_vencimiento"),
+
+        )
+        return tarea
+
     def validate_estado(self):
         if self.estado not in ESTADOS_PERMITIDOS:
             raise ValueError(f'Estado no válido. Estados permitidos: {", ".join(ESTADOS_PERMITIDOS)}')
 
     def validation_data(self):
         res = self.validate(["titulo", "descripcion", "estado", "fecha_vencimiento"])
-        if not res or len(res)>0:
+        if not res or len(res) > 0:
             raise ValueError(f'Campos Requeridos : {", ".join(res)}')
         self.validate_estado()
 
     def to_dict(self):
         return {
-            '_id' : self._id,
+            '_id': self._id,
             'titulo': self.titulo,
             'descripcion': self.descripcion,
             'estado': self.estado,
-            'fecha_vencimiento': self.fecha_vencimiento.strftime('%Y-%m-%d')
+            'fecha_vencimiento': self.fecha_vencimiento.strftime(FORMATE_DATETIME)
         }
 
     def to_dict_res(self):
         return {
-            'id' : self._id,
+            'id': self._id,
             'titulo': self.titulo,
             'descripcion': self.descripcion,
             'estado': self.estado,
-            'fecha_vencimiento': self.fecha_vencimiento.strftime('%Y-%m-%d')
+            'fecha_vencimiento': self.fecha_vencimiento.strftime(FORMATE_DATETIME)
         }
 
     @staticmethod
@@ -58,4 +70,3 @@ class Tarea(ObjectData):
         tarea = Tarea(data['titulo'], data['descripcion'], data['estado'], fecha_vencimiento)
         tarea.validation_data()
         return tarea
-

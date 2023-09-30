@@ -18,6 +18,10 @@ class DefaultException(CustomException):
         self.code = 500
         self.message = {'error': 'Ocurrió un error inesperado en el servidor.'}
 
+class InvalidUserException(CustomException):
+    def __init__(self):
+        self.code = 403
+        self.message = {'error': 'Usuario o contraseña invalida.'}
 
 class NotFoundException(CustomException):
 

@@ -18,10 +18,10 @@ class TareaLogic:
 
     def get_tarea_id(self, tarea_id):
         tasks_collection = self.db.get_collection('tareas')
-        tarea = tasks_collection.find_one({'_id': ObjectId(tarea_id)})
+        tarea = tasks_collection.find_one({'_id': tarea_id})
 
-        if tarea:
-            tarea['_id'] = str(tarea['_id'])
+        if not tarea:
+            raise NotFoundException()
 
         return tarea
 
@@ -50,7 +50,7 @@ class TareaLogic:
 
     def eliminar_tarea(self, tarea_id):
         tasks_collection = self.db.get_collection('tareas')
-        res = tasks_collection.delete_one({'_id': ObjectId(tarea_id)})
+        res = tasks_collection.delete_one({'_id': tarea_id})
 
         if res.deleted_count <= 0:
             raise NotFoundException()
